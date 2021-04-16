@@ -19,16 +19,13 @@ public class Course implements Serializable {
 	private int actual;
 	private String title;
 	private String instructor;
-	//private String description;
-	
 	@Override public String toString() {
 		return "Course{" +
 	"code=" + code +
-	", max=" + max +
-	", actual=" + actual +
 	", title='" + title + '\'' +
 	", instructor='" + instructor + '\'' +
-	//", descrip='" + description + '\'' +
+	", max=" + max +
+	", actual=" + actual +
 	'}';
 	}
 	

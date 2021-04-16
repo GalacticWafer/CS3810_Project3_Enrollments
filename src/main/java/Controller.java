@@ -24,27 +24,29 @@ public class Controller {
 		session.close();
 	}
 	// TODOd: return a Student entity from the given id (or null if the entity does not exist)
-	public Student getStudent(int id) {
-		return em.find(Student.class, id);
+	public Student getStudent(int studentId) {
+		return em.find(Student.class, studentId);
 	}
 	// TODOd: add the given student entity, returning true/false depending whether the operation was successful or not
 	public boolean addStudent(final Student student) {
-		
+		EntityTransaction trans = em.getTransaction();
 		try {
-			em.getTransaction().begin();
+			trans.begin();
 			em.persist(student);
-			em.getTransaction().commit();
+			trans.commit();
 			return true;
 		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-			em.getTransaction().rollback();
+		catch(Exception e) {
+			e.printStackTrace();
+			trans.rollback();
 			return false;
 		}
 	}
 	// TODOd: return a list of all Course entities
 	public List<Course> getCourses() {
-		return em.createQuery("From Course", Course.class).getResultList();
+		List<Course> courses = em.createQuery("From Course", Course.class).getResultList();
+		courses.forEach(x -> session.evict(x));
+		return courses;
 	}
 	// TODOd: enroll a student to a course based on the given parameters, returning true/false depending whether the operation was successful or not
 	public boolean enrollStudent(String courseCode, int studentId) {
@@ -57,6 +59,7 @@ public class Controller {
 			Enrollment enrollment = new Enrollment(studentId, courseCode);
 			em.persist(enrollment);
 			et.commit();
+			//course.setActual(course.getActual() + 1);
 			bool = true;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -77,7 +80,9 @@ public class Controller {
 		try {
 			trans.begin();
 			em.remove(enr);
+			Course course = em.find(Course.class, enr.getCode());
 			trans.commit();
+			//course.setActual(course.getActual() - 1);
 			return true;
 		}catch(Exception e) {
 			trans.rollback();   

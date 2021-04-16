@@ -41,6 +41,8 @@ CREATE TABLE enrollments
 	FOREIGN KEY (code) REFERENCES courses (code),
 	FOREIGN KEY (id) REFERENCES students (id)
 );
+drop trigger if exists drop_student;
+drop trigger if exists enroll_student;
 -- TODOd: create a trigger name enroll_student that automatically increments the actual field in courses whenever a student enrolls in a course
 DELIMITER $$
 CREATE TRIGGER enroll_student
@@ -50,6 +52,7 @@ CREATE TRIGGER enroll_student
 BEGIN
 	update courses c set c.actual = c.actual + 1 where c.code = new.code;
 END $$
+
 -- TODOd: create a trigger name drop_student that automatically decrements the actual field in courses whenever a student drops from a course
 CREATE TRIGGER drop_student
 	before DELETE
@@ -73,6 +76,6 @@ DELIMITER ;
 CREATE USER if not exists 'enrollments' IDENTIFIED BY '135791';
 GRANT ALL ON enrollments.* TO 'enrollments';
 
-use enrollments;
-show tables;
-desc enrollments;
+# use enrollments;
+# show tables;
+# desc enrollments;

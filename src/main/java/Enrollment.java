@@ -15,7 +15,6 @@ public class Enrollment {
 	private EnrollmentPK key;
 	public Enrollment(){}
 	public Enrollment(int studentId, String courseCode) {
-		super();
 		this.key = new EnrollmentPK(studentId, courseCode);
 	}
 	
