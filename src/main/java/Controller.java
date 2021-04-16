@@ -85,10 +85,7 @@ public class Controller {
 		}
 	}
 	// TODOd: return a list of all Student entities enrolled in the given course (hint: use the stored procedure 'list_students')
-	public List<Student> getStudentsEnrolled(String courseCode) {
-		SessionImpl sessionImpl = (SessionImpl) session; 
-		Connection conn = sessionImpl.connection();
-		//return em.createQuery("From Enrollment", Enrollment.class).getResultList();
+	public List<Student> getStudentsEnrolled(String courseCode) { 
 		return session.createSQLQuery("CALL list_students(:course_code)").addEntity(Student.class)
     .setParameter("course_code", courseCode).list();
 	}
