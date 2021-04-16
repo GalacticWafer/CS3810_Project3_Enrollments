@@ -60,7 +60,7 @@ BEGIN
 END $$
 -- TODOd: create a stored procedure name list_students that returns a list of ids and names of all students currently enrolled in a given course
 CREATE procedure list_students(
-	IN course_code int
+	IN course_code varchar(10)
 )
 begin
 	select s.id, s.name

@@ -6,39 +6,34 @@
  */
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "enrollments")
 public class Enrollment {
 	@EmbeddedId
-	private EnrollmentPK enrollmentPK;
-	@ManyToOne
-	@JoinColumns( {
-	 @JoinColumn(name = "id", insertable = false, updatable = false),
-	 @JoinColumn(name = "code", insertable = false, updatable = false)
-	})
-	private Course course;
+	private EnrollmentPK key;
+	public Enrollment(){}
+	public Enrollment(int studentId, String courseCode) {
+		super();
+		this.key = new EnrollmentPK(studentId, courseCode);
+	}
 	
+	public String getCode() { return key.getCode(); }
+	public int getId() { return key.getId(); }
+	public static Object getKey(int studentId, String courseCode) { return new EnrollmentPK(studentId, courseCode);	}
+
+	public void setCode(String code) { key.setCode(code); }
+	public void setId(int id) { key.setId(id); }    
+	public void setKey(int studentId, String courseCode){
+		key = new EnrollmentPK(studentId, courseCode);
+	}
+
 	@Override public String toString() {
 		return "Enrollment{" +
-			   "enrollmentPK=" + enrollmentPK +
-			   ", course=" + course +
-			   '}';
-	}
-	
-	public Course getCourse() {
-		return course;
-	}
-	
-	public void setCourse(Course course) {
-		this.course = course;
-	}
-	
-	public EnrollmentPK getEnrollmentPK() {
-		return enrollmentPK;
-	}
-	
-	public void setEnrollmentPK(EnrollmentPK enrollmentPK) {
-		this.enrollmentPK = enrollmentPK;
+			//"enrollmentPK=" + enrollmentPK +
+			"course=" + key.getCode() +
+			", id=" + key.getId() +
+			'}';
 	}
 }

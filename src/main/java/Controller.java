@@ -6,10 +6,10 @@
  */
 
 import org.hibernate.Session;
+import org.hibernate.internal.SessionImpl;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.sql.Connection;
 import java.util.List;
 
 public class Controller {
@@ -44,7 +44,7 @@ public class Controller {
 	}
 	// TODOd: return a list of all Course entities
 	public List<Course> getCourses() {
-		return em.createQuery("SELECT * FROM enrollments.courses", Course.class).getResultList();
+		return em.createQuery("From Course", Course.class).getResultList();
 	}
 	// TODOd: enroll a student to a course based on the given parameters, returning true/false depending whether the operation was successful or not
 	public boolean enrollStudent(String courseCode, int studentId) {
@@ -54,24 +54,21 @@ public class Controller {
 			et.begin();
 			Student student = em.find(Student.class, studentId);
 			Course course = em.find(Course.class, courseCode);
-			Enrollment enrollment = new Enrollment();
-			enrollment.setCourse(course);
-			EnrollmentPK key = new EnrollmentPK(studentId, courseCode);
-			course.getStudents().add(student);
+			Enrollment enrollment = new Enrollment(studentId, courseCode);
+			em.persist(enrollment);
 			et.commit();
 			bool = true;
 		}catch(Exception e) {
 			e.printStackTrace();
 			et.rollback();
-		}finally {
-			return bool;
 		}
+		return bool;
 	}
 	// TODOd: drop a student from a course based on the given parameters, returning true/false depending whether the operation was successful or not
 	public boolean dropStudent(String courseCode, int studentId) {
-		EnrollmentPK epk = new EnrollmentPK(studentId, courseCode);
+		Enrollment enr;
 		try {
-			var enr = em.find(Enrollment.class, epk);
+			enr = em.find(Enrollment.class, Enrollment.getKey(studentId, courseCode));
 		}catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -79,7 +76,7 @@ public class Controller {
 		var trans = em.getTransaction();
 		try {
 			trans.begin();
-			em.remove(epk);
+			em.remove(enr);
 			trans.commit();
 			return true;
 		}catch(Exception e) {
@@ -88,7 +85,11 @@ public class Controller {
 		}
 	}
 	// TODOd: return a list of all Student entities enrolled in the given course (hint: use the stored procedure 'list_students')
-	public List<Student> getStudentsEnrolled(String course) {
-		return em.createQuery("call list_students(" + course + ")").getResultList();
+	public List<Student> getStudentsEnrolled(String courseCode) {
+		SessionImpl sessionImpl = (SessionImpl) session; 
+		Connection conn = sessionImpl.connection();
+		//return em.createQuery("From Enrollment", Enrollment.class).getResultList();
+		return session.createSQLQuery("CALL list_students(:course_code)").addEntity(Student.class)
+    .setParameter("course_code", courseCode).list();
 	}
 }

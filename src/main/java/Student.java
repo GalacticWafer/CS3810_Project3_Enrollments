@@ -16,9 +16,6 @@ public class Student implements Serializable {
     @Id
     private int id;
     
-    @OneToMany(mappedBy = "id") 
-    private List<Course> courses;
-    
     private String name;
 
     public int getId() {
