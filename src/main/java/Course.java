@@ -2,7 +2,7 @@
  * CS3810 - Principles of Database Systems - Spring 2021
  * Instructor: Thyago Mota
  * Description: DB 03 - Student
- * Student(s) Name(s): Malcolm Johnson
+ * Student(s) Name(s): Matt Hurt, Malcolm Johnson, Adam Wojdyla
  */
 
 import javax.persistence.Entity;

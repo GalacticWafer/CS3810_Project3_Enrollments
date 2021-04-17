@@ -5,7 +5,7 @@ import java.io.Serializable;
  * CS3810 - Principles of Database Systems - Spring 2021
  * Instructor: Thyago Mota
  * Description: DB 03 - EnrollmentPK
- * Student(s) Name(s): Malcolm Johnson
+ * Student(s) Name(s): Matt Hurt, Malcolm Johnson, Adam Wojdyla
  */
          	@Embeddable
 	public class EnrollmentPK implements Serializable {

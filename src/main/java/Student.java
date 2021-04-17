@@ -2,7 +2,7 @@
  * CS3810 - Principles of Database Systems - Spring 2021
  * Instructor: Thyago Mota
  * Description: DB 03 - Student
- * Student(s) Name(s):
+ * Student(s) Name(s): Matt Hurt, Malcolm Johnson, Adam Wojdyla
  */
 
 import javax.persistence.*;
@@ -17,7 +17,11 @@ public class Student implements Serializable {
     private int id;
     
     private String name;
-
+    public Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    public Student() {}
     public int getId() {
         return id;
     }

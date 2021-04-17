@@ -2,7 +2,7 @@
  * CS3810 - Principles of Database Systems - Spring 2021
  * Instructor: Thyago Mota
  * Description: DB 03 - Controller
- * Student(s) Name(s):
+ * Student(s) Name(s): Matt Hurt, Malcolm Johnson, Adam Wojdyla
  */
 
 import org.hibernate.Session;
@@ -45,23 +45,24 @@ public class Controller {
 	// TODOd: return a list of all Course entities
 	public List<Course> getCourses() {
 		List<Course> courses = em.createQuery("From Course", Course.class).getResultList();
-		courses.forEach(x -> session.evict(x));
+		courses.forEach(x->session.evict(x));
 		return courses;
 	}
 	// TODOd: enroll a student to a course based on the given parameters, returning true/false depending whether the operation was successful or not
 	public boolean enrollStudent(String courseCode, int studentId) {
 		EntityTransaction et = em.getTransaction();
 		boolean bool = false;
-		try{
+		try {
 			et.begin();
-			Student student = em.find(Student.class, studentId);
+			
+			// Fixme: Line 60 messes everything up! Comment it out to see that the test works without it.
 			Course course = em.find(Course.class, courseCode);
+			
 			Enrollment enrollment = new Enrollment(studentId, courseCode);
 			em.persist(enrollment);
 			et.commit();
-			//course.setActual(course.getActual() + 1);
 			bool = true;
-		}catch(Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 			et.rollback();
 		}
@@ -72,7 +73,8 @@ public class Controller {
 		Enrollment enr;
 		try {
 			enr = em.find(Enrollment.class, Enrollment.getKey(studentId, courseCode));
-		}catch(Exception e) {
+		}
+		catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -80,18 +82,31 @@ public class Controller {
 		try {
 			trans.begin();
 			em.remove(enr);
-			Course course = em.find(Course.class, enr.getCode());
 			trans.commit();
-			//course.setActual(course.getActual() - 1);
 			return true;
-		}catch(Exception e) {
-			trans.rollback();   
+		}
+		catch(Exception e) {
+			trans.rollback();
 			return false;
 		}
 	}
 	// TODOd: return a list of all Student entities enrolled in the given course (hint: use the stored procedure 'list_students')
-	public List<Student> getStudentsEnrolled(String courseCode) { 
+	public List<Student> getStudentsEnrolled(String courseCode) {
 		return session.createSQLQuery("CALL list_students(:course_code)").addEntity(Student.class)
-    .setParameter("course_code", courseCode).list();
+					  .setParameter("course_code", courseCode).list();
+	}
+	// For testing purposes
+	public boolean removeStudent(int i) {
+		EntityTransaction transaction = em.getTransaction();
+		transaction.begin();
+		try {
+			em.remove(em.find(Student.class, i));
+			transaction.commit();
+			return true;
+		}
+		catch(Exception e) {
+			transaction.rollback();
+			return false;
+		}
 	}
 }
