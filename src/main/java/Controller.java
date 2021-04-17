@@ -54,10 +54,7 @@ public class Controller {
 		boolean bool = false;
 		try {
 			et.begin();
-			
-			// Fixme: Line 60 messes everything up! Comment it out to see that the test works without it.
 			Course course = em.find(Course.class, courseCode);
-			
 			Enrollment enrollment = new Enrollment(studentId, courseCode);
 			em.persist(enrollment);
 			et.commit();
